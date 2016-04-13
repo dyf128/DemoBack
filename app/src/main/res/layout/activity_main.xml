@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.dmeos.test.androidart.home.MainActivity">
+
+
+    <com.dmeos.test.androidart.widget.BottomTabGroup
+        android:id="@+id/bottom_bar_root"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="@drawable/list_vertical_root_bg"
+        android:orientation="horizontal"
+        android:paddingTop="5dp">
+
+        <com.dmeos.test.androidart.widget.BottomTab
+            android:id="@+id/tab_01"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/main_bottombar_icon_home_selector"
+            android:text="tab01"
+            android:tag="0"
+            android:textColor="@color/main_bottombar_text_selector" />
+
+        <com.dmeos.test.androidart.widget.BottomTab
+            android:id="@+id/tab_02"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/main_bottombar_icon_home_selector"
+            android:text="tab02"
+            android:tag="1"
+            android:textColor="@color/main_bottombar_text_selector" />
+
+        <com.dmeos.test.androidart.widget.BottomTab
+            android:id="@+id/tab_03"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/main_bottombar_icon_home_selector"
+            android:text="tab03"
+            android:tag="2"
+            android:textColor="@color/main_bottombar_text_selector" />
+
+    </com.dmeos.test.androidart.widget.BottomTabGroup>
+
+    <com.dmeos.test.androidart.home.HorizontalDisableViewPager
+        android:id="@+id/main_pageview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom_bar_root">
+
+    </com.dmeos.test.androidart.home.HorizontalDisableViewPager>
+</RelativeLayout>
