@@ -1,0 +1,12 @@
+*.idea
+*.iml
+*.properties
+gradle/wrapper/gradle-wrapper.jar
+
+*.lock
+
+*.bin
+
+*.iml
+
+*.iml

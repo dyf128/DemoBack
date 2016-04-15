@@ -2,20 +2,20 @@ package com.dmeos.test.androidart.user;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.KeyEvent;
+import android.text.TextUtils;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.Toast;
 
-import com.dmeos.test.androidart.base.BaseActivity;
 import com.dmeos.test.androidart.R;
+import com.dmeos.test.androidart.base.BaseActivity;
+import com.dmeos.test.androidart.module.User;
 import com.dmeos.test.androidart.widget.TitleBar;
 
 
-public class LoginActivity extends BaseActivity {
+public class LoginActivity extends BaseActivity implements IUserView {
 
 
     // UI references.
@@ -23,7 +23,9 @@ public class LoginActivity extends BaseActivity {
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private Button mEmailSignInButton;
     private TitleBar mTitleBar;
+    private IUserPresenter mLoginPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,36 +41,63 @@ public class LoginActivity extends BaseActivity {
     protected void initView() {
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-
         mPasswordView = (EditText) findViewById(R.id.password);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            }
-        });
-
+        mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
-        findViewById(R.id.email_sign_in_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, RegActivity.class);
-                startActivity(intent);
-            }
-        });
         mTitleBar = getTitlebar();
         mTitleBar.setVisibility(View.VISIBLE);
+        mLoginPresenter = new UserPresenterImpl(this);
+        mEmailSignInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (canSubmmit()) {
+                    mLoginPresenter.doLogin(mEmailView.getText().toString(), mPasswordView.getText().toString());
+                }
+            }
+        });
     }
+
+    /**
+     * 表单相关校验
+     */
+    private boolean canSubmmit() {
+        String eml = mEmailView.getText().toString().trim();
+        String password = mPasswordView.getText().toString().trim();
+        if (TextUtils.isEmpty(eml)) {
+            Toast.makeText(this, getResStringById(R.string.tip_login_eml_empty),Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (TextUtils.isEmpty(password)) {
+            Toast.makeText(this, getResStringById(R.string.tip_login_pwd_empty),Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void showProgress() {
+        showBlockLoadingDailogView();
+    }
+
+    @Override
+    public void hideProgress() {
+        hiddenBlockLoadingDailogView();
+    }
+
+    @Override
+    public void onLoadDataFailure(int code, String message) {
+
+    }
+
+    @Override
+    public void onLoadUserDatauccess(int code, String message, User user) {
+        // TODO 登录成功回调 保存用户信息 跳转页面相关操作
+        Intent intent = new Intent(LoginActivity.this, RegActivity.class);
+        startActivity(intent);
+        mLoginPresenter.saveLoginUserInfo(user);
+    }
+
+
 }
 

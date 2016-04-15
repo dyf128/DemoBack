@@ -38,6 +38,10 @@ public abstract class BaseActivity extends FragmentActivity {
         return mTitleBar;
     }
 
+    public String getResStringById(int id) {
+        return getResources().getString(id);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +75,21 @@ public abstract class BaseActivity extends FragmentActivity {
      * 不带Loading框的加载数据
      */
     public void loadDataWidthoutLoadingDialog() {
+
+    }
+
+    public void showBlockLoadingDailogView(){
+
+    }
+
+    public void hiddenBlockLoadingDailogView(){
+
+    }
+
+    public void showLodaingTitleBarView(){
+
+    }
+    public void hiddenLodaingTitleBarView(){
 
     }
 }
