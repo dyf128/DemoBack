@@ -3,6 +3,7 @@ package com.dmeos.test.androidart.module;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class User implements Serializable{
 
@@ -20,4 +21,7 @@ public class User implements Serializable{
 
     @SerializedName("user_avatar")
     public String userAvatar;
+
+    @SerializedName("user_photos")
+    public List<String> photos;
 }
