@@ -28,7 +28,7 @@ public class NetUtil {
 
     public static void setHasNet(boolean hasNet) {
         NetUtil.hasNet = hasNet;
-        if(hasNet) {
+        if (hasNet) {
 
         }
     }
@@ -91,7 +91,9 @@ public class NetUtil {
     // wifi网络
     public static final int NETWORKINFO_WIFI = 3;
 
-    /** 验证当前是否有网络 */
+    /**
+     * 验证当前是否有网络
+     */
     public static boolean checkNetWrokAvailable(Context context) {
         if (context != null) {
             NetworkInfo nwInfo = getNetWorkInfo(context);
@@ -102,12 +104,13 @@ public class NetUtil {
         return false;
     }
 
-    /** 启动设置网络连接界面 */
+    /**
+     * 启动设置网络连接界面
+     */
     public static boolean startNewWorkConnection(Context context) {
         if (checkNetWrokAvailable(context)) {
             return true;
-        }
-        else {// 假如没有可用网络
+        } else {// 假如没有可用网络
             Intent intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
@@ -115,17 +118,20 @@ public class NetUtil {
         }
     }
 
-    /** 判断当前网络是否是wifi连接网络 */
+    /**
+     * 判断当前网络是否是wifi连接网络
+     */
     public static boolean isWifiNetWork(Context context) {
         if (getNetWorkType(context) == ConnectivityManager.TYPE_WIFI) {
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
 
-    /** 判断是否是wap网络 */
+    /**
+     * 判断是否是wap网络
+     */
     public static boolean isWapNetWork(Context context) {
         if (getCurrentApn(context) == NETWORKINFO_MOBILE_WAP) {
             TelephonyManager telmanager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -147,18 +153,18 @@ public class NetUtil {
                 return false;
             }
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
 
-    /** 判断是否是Net网络 */
+    /**
+     * 判断是否是Net网络
+     */
     public static boolean isNetNetwork(Context context) {
         if (getCurrentApn(context) == NETWORKINFO_MOBILE_NET) {
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -177,7 +183,9 @@ public class NetUtil {
         return false;
     }
 
-    /** 得到当前网络的APN */
+    /**
+     * 得到当前网络的APN
+     */
     private static int getCurrentApn(Context context) {
         NetworkInfo netWorkInfo = getNetWorkInfo(context);
         if (netWorkInfo != null) {
@@ -187,49 +195,52 @@ public class NetUtil {
                     && netWorkInfo.getExtraInfo() != null
                     && netWorkInfo.getExtraInfo().toLowerCase().endsWith("wap")) {
                 return NETWORKINFO_MOBILE_WAP;
-            }
-            else {
+            } else {
                 return NETWORKINFO_MOBILE_NET;
             }
-        }
-        else {
+        } else {
             return NETWORKINFO_INVALID;
         }
     }
 
-    /** 判断当前网络是否是手机Gprs连接网络 */
+    /**
+     * 判断当前网络是否是手机Gprs连接网络
+     */
     public static boolean isMobileNetWrok(Context context) {
         if (getNetWorkType(context) == ConnectivityManager.TYPE_MOBILE) {
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
 
-    /** 得到网络类型，可以判断是wifi，还是mobile连接 */
+    /**
+     * 得到网络类型，可以判断是wifi，还是mobile连接
+     */
     private static int getNetWorkType(Context context) {
         NetworkInfo nw = getNetWorkInfo(context);
         if (nw != null) {
             return nw.getType();
-        }
-        else {
+        } else {
             return -1;
         }
     }
 
-    /** 得到网络信息 */
+    /**
+     * 得到网络信息
+     */
     public static NetworkInfo getNetWorkInfo(Context context) {
         ConnectivityManager connectMgr = getConnectManager(context);
         if (connectMgr == null) {
             return null;
-        }
-        else {
+        } else {
             return connectMgr.getActiveNetworkInfo();
         }
     }
 
-    /** 得到网络管理对象 */
+    /**
+     * 得到网络管理对象
+     */
     private static ConnectivityManager getConnectManager(Context context) {
         ConnectivityManager connectMgr =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -238,14 +249,19 @@ public class NetUtil {
     }
 
     // ----------手机IMEI-----------------------------------------
-    /** 手机IMEI */
+
+    /**
+     * 手机IMEI
+     */
     public static String getIMEI(Context context) {
         TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         String imei = telephonyManager.getDeviceId();
         return imei;
     }
 
-    /** 手机sim卡号 */
+    /**
+     * 手机sim卡号
+     */
     public static String getSIM(Context context) {
         TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         String imei = telephonyManager.getSimSerialNumber();
@@ -256,10 +272,10 @@ public class NetUtil {
     public static String getLocalIpAddress() {
         try {
             for (Enumeration<NetworkInterface> en = NetworkInterface
-                    .getNetworkInterfaces(); en.hasMoreElements();) {
+                    .getNetworkInterfaces(); en.hasMoreElements(); ) {
                 NetworkInterface intf = en.nextElement();
                 for (Enumeration<InetAddress> enumIpAddr = intf
-                        .getInetAddresses(); enumIpAddr.hasMoreElements();) {
+                        .getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
                     InetAddress inetAddress = enumIpAddr.nextElement();
                     if (!inetAddress.isLoopbackAddress() && (inetAddress instanceof Inet4Address)) {
                         return inetAddress.getHostAddress().toString();
@@ -270,6 +286,14 @@ public class NetUtil {
             ex.printStackTrace();
         }
         return null;
+    }
+
+    public static String httpRequestErrorMsg(int statusCode) {
+        String message = "";
+        if (statusCode >= Constants.NET_REQUEST_ERROR_CODE_500) {
+            message = Constants.NET_REQUEST_ERROR_MSG_500;
+        }
+        return message;
     }
 
 }

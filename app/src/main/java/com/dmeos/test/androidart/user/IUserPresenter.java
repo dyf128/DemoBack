@@ -7,14 +7,17 @@ public interface IUserPresenter {
 
     /**
      * 执行登录 发送请求
+     *
      * @param userName
      * @param password
+     * @param  requestTag
      */
-    void doLogin(String userName, String password);
+    void doLogin(String userName, String password, String requestTag);
 
 
     /**
      * 通过id获取用户信息
+     *
      * @param userId
      */
     void getUserInfoById(String userId);

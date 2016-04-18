@@ -17,20 +17,10 @@ public abstract class AbstractRequest<T> extends Request<T> {
     private Map<String, String> headers;
     private Response.Listener<T> listener;
     private Response.ErrorListener errorListener;
-    private ResponseCallback<T> httpListener;
 
     public AbstractRequest(String url) {
         super(Method.GET, url, null);
         this.url = url;
-    }
-
-    public ResponseCallback<T> getHttpListener() {
-        return httpListener;
-    }
-
-    public AbstractRequest setHttpListener(ResponseCallback<T> httpListener) {
-        this.httpListener = httpListener;
-        return this;
     }
 
     public AbstractRequest setRequestMethod(int requestMethod) {
@@ -114,21 +104,9 @@ public abstract class AbstractRequest<T> extends Request<T> {
         return url;
     }
 
-    @Override
-    public Response.ErrorListener getErrorListener() {
-        return errorListener;
-    }
-
 
     @Override
     public void deliverError(VolleyError error) {
-        int errorCode = -1;
-        if (error.networkResponse != null) {
-            errorCode =  error.networkResponse.statusCode;
-        }
-        if (httpListener != null) {
-            httpListener.onFailure(errorCode, error.getMessage());
-        }
         if (errorListener != null) {
             errorListener.onErrorResponse(error);
         }
@@ -139,9 +117,6 @@ public abstract class AbstractRequest<T> extends Request<T> {
     protected void deliverResponse(T response) {
         if (listener != null) {
             listener.onResponse(response);
-        }
-        if (httpListener != null) {
-            httpListener.onSuccess(0,"success", response);
         }
     }
 

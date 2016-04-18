@@ -16,6 +16,7 @@ import com.dmeos.test.androidart.widget.TitleBar;
 
 public class LoginActivity extends BaseActivity implements IUserView {
 
+    private static final String TAG = LoginActivity.class.getSimpleName();
 
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -51,7 +52,7 @@ public class LoginActivity extends BaseActivity implements IUserView {
             @Override
             public void onClick(View v) {
                 if (canSubmmit()) {
-                    mLoginPresenter.doLogin(mEmailView.getText().toString(), mPasswordView.getText().toString());
+                    mLoginPresenter.doLogin(mEmailView.getText().toString(), mPasswordView.getText().toString(), TAG);
                 }
             }
         });
@@ -81,12 +82,12 @@ public class LoginActivity extends BaseActivity implements IUserView {
 
     @Override
     public void hideProgress() {
-        hiddenBlockLoadingDailogView();
+        dismissBlockLoadingDailogView();
     }
 
     @Override
     public void onLoadDataFailure(int code, String message) {
-
+        showToast(message);
     }
 
     @Override

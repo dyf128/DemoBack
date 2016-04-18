@@ -16,9 +16,9 @@ public class UserPresenterImpl implements IUserPresenter, ResponseCallback {
     }
 
     @Override
-    public void doLogin(String userName, String password) {
+    public void doLogin(String userName, String password, String requestTag) {
         loginView.showProgress();
-        loginManager.doLoginRequest(userName, password, this);
+        loginManager.doLoginRequest(userName, password, this, requestTag);
     }
 
 

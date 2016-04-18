@@ -2,6 +2,7 @@ package com.dmeos.test.androidart.base;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +15,6 @@ import com.dmeos.test.androidart.widget.TitleBar;
 
 public abstract class BaseActivity extends FragmentActivity {
     private static final String TAG = BaseActivity.class.getSimpleName();
-
 
     private TitleBar mTitleBar;
     private View mBaseContainerView;
@@ -33,6 +33,7 @@ public abstract class BaseActivity extends FragmentActivity {
 
     /**
      * 获得Titlebar
+     *
      * @return
      */
     public TitleBar getTitlebar() {
@@ -65,39 +66,44 @@ public abstract class BaseActivity extends FragmentActivity {
         super.setContentView(mBaseContainerView);
     }
 
-    public void showToast(String message){
-        Toast.makeText(this,message,Toast.LENGTH_SHORT).show();
-    }
-    public void showToast(String message, int time){
-        Toast.makeText(this,message,time).show();
+    public void showToast(String message) {
+        if (!TextUtils.isEmpty(message)) {
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        }
     }
 
-    /**
-     * 带Loading框的加载数据
-     */
-    public void loadDataWidthLoadingDialog() {
-
+    public void showToast(String message, int time) {
+        if (!TextUtils.isEmpty(message)) {
+            Toast.makeText(this, message, time).show();
+        }
     }
 
     /**
-     * 不带Loading框的加载数据
+     * 加载数据显示titlebar loading圈
      */
-    public void loadDataWidthoutLoadingDialog() {
+    public void showTitlebarLoading() {
 
     }
 
-    public void showBlockLoadingDailogView(){
+    /**
+     * 加载数据隐藏titlebar loading圈
+     */
+    public void hiddenTitlebarLoading() {
 
     }
 
-    public void hiddenBlockLoadingDailogView(){
+    /**
+     * 加载数据显示Loading dialog
+     */
+    public void showBlockLoadingDailogView() {
 
     }
 
-    public void showLodaingTitleBarView(){
+    /**
+     * 加载数据显示Loading dialog
+     */
+    public void dismissBlockLoadingDailogView() {
 
     }
-    public void hiddenLodaingTitleBarView(){
 
-    }
 }
