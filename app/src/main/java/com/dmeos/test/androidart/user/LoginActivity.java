@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.dmeos.test.androidart.R;
 import com.dmeos.test.androidart.base.BaseActivity;
@@ -65,11 +64,11 @@ public class LoginActivity extends BaseActivity implements IUserView {
         String eml = mEmailView.getText().toString().trim();
         String password = mPasswordView.getText().toString().trim();
         if (TextUtils.isEmpty(eml)) {
-            Toast.makeText(this, getResStringById(R.string.tip_login_eml_empty),Toast.LENGTH_SHORT).show();
+            showToast(getResStringById(R.string.tip_login_eml_empty));
             return false;
         }
         if (TextUtils.isEmpty(password)) {
-            Toast.makeText(this, getResStringById(R.string.tip_login_pwd_empty),Toast.LENGTH_SHORT).show();
+            showToast(getResStringById(R.string.tip_login_pwd_empty));
             return false;
         }
         return true;

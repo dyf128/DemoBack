@@ -1,5 +1,9 @@
 package com.dmeos.test.androidart.net;
 
+/**
+ * 网络数据返回回调
+ * @param <T>
+ */
 public interface ResponseCallback<T> {
 
     void onFailure(int code, String message);

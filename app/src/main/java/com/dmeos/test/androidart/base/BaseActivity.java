@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.dmeos.test.androidart.R;
 import com.dmeos.test.androidart.widget.TitleBar;
@@ -62,6 +63,13 @@ public abstract class BaseActivity extends FragmentActivity {
         mContent.addView(mContentChildView);
         mTitleBar.setmCurrentActvity(this);
         super.setContentView(mBaseContainerView);
+    }
+
+    public void showToast(String message){
+        Toast.makeText(this,message,Toast.LENGTH_SHORT).show();
+    }
+    public void showToast(String message, int time){
+        Toast.makeText(this,message,time).show();
     }
 
     /**

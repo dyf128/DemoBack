@@ -11,8 +11,6 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 
 public class GsonRequest<T extends Result> extends AbstractRequest<T> {
-    private static Gson mGson = new Gson();
-
     private final Gson gson = new Gson();
     private Type type;
 

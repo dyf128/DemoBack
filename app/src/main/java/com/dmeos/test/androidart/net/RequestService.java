@@ -7,7 +7,9 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.dmeos.test.androidart.base.AppApplication;
 
-
+/**
+ * 所有请求通过该类去加入请求队列执行|取消
+ */
 public class RequestService {
 
     private RequestQueue mRequestQueue;

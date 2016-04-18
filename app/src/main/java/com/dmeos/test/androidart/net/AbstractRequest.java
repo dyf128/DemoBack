@@ -122,8 +122,12 @@ public abstract class AbstractRequest<T> extends Request<T> {
 
     @Override
     public void deliverError(VolleyError error) {
+        int errorCode = -1;
+        if (error.networkResponse != null) {
+            errorCode =  error.networkResponse.statusCode;
+        }
         if (httpListener != null) {
-            httpListener.onFailure(1,error.getMessage());
+            httpListener.onFailure(errorCode, error.getMessage());
         }
         if (errorListener != null) {
             errorListener.onErrorResponse(error);

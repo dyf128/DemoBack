@@ -9,9 +9,7 @@ import android.widget.TextView;
 
 import com.dmeos.test.androidart.R;
 
-/**
- * Created by ufenqi on 16/4/12.
- */
+
 public class TitleBar extends RelativeLayout implements View.OnClickListener {
     private Activity mCurrentActvity;
     private TextView mBack;

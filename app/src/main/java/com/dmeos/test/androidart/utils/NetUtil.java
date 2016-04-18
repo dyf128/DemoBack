@@ -15,6 +15,9 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 
+/**
+ * 网络相关工具类
+ */
 public class NetUtil {
 
     private static boolean hasNet = false;

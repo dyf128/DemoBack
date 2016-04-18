@@ -20,7 +20,7 @@ public class UserManager {
     public void doLoginRequest(String username, String password, final ResponseCallback listener) {
         // TODO 发送网络请求 调用网络请求封装工具类 在工具类里头判断网络类型 是否联网等情况
         //Volley.newRequestQueue(AppApplication.getContext()).add();
-        String url = "http://www.mocky.io/v2/5710ce62110000231f9e274a";
+        String url = "http://www.mocky.io/v2/571443950f0000d3064904b5";
         Map<String, String> params = new HashMap<>();
         params.put("user_name", username);
         params.put("user_pwd", password);
