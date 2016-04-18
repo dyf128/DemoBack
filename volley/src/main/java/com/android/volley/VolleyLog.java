@@ -33,7 +33,6 @@ public class VolleyLog {
     public static String TAG = "Volley";
 
     public static boolean DEBUG = Log.isLoggable(TAG, Log.VERBOSE);
-//    public static boolean DEBUG =true;
 
     /**
      * Customize the log tag for your application, so that other apps
@@ -49,10 +48,6 @@ public class VolleyLog {
 
         // Reinitialize the DEBUG "constant"
         DEBUG = Log.isLoggable(TAG, Log.VERBOSE);
-    }
-
-    public static void setDebugable(boolean isDebug){
-        DEBUG=isDebug;
     }
 
     public static void v(String format, Object... args) {

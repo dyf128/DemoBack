@@ -38,10 +38,6 @@ public class Response<T> {
         public void onErrorResponse(VolleyError error);
     }
 
-    public interface LoadingListener{
-        public void onLoading(boolean isUpload, long total, long current);
-    }
-
     /** Returns a successful response containing the parsed result. */
     public static <T> Response<T> success(T result, Cache.Entry cacheEntry) {
         return new Response<T>(result, cacheEntry);

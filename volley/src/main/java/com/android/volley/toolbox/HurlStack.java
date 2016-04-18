@@ -136,7 +136,7 @@ public class HurlStack implements HttpStack {
      * @return whether the response has a body
      */
     private static boolean hasResponseBody(int requestMethod, int responseCode) {
-        return requestMethod != Method.HEAD
+        return requestMethod != Request.Method.HEAD
             && !(HttpStatus.SC_CONTINUE <= responseCode && responseCode < HttpStatus.SC_OK)
             && responseCode != HttpStatus.SC_NO_CONTENT
             && responseCode != HttpStatus.SC_NOT_MODIFIED;
@@ -166,7 +166,14 @@ public class HurlStack implements HttpStack {
      * Create an {@link HttpURLConnection} for the specified {@code url}.
      */
     protected HttpURLConnection createConnection(URL url) throws IOException {
-        return (HttpURLConnection) url.openConnection();
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+        // Workaround for the M release HttpURLConnection not observing the
+        // HttpURLConnection.setFollowRedirects() property.
+        // https://code.google.com/p/android/issues/detail?id=194495
+        connection.setInstanceFollowRedirects(HttpURLConnection.getFollowRedirects());
+
+        return connection;
     }
 
     /**
@@ -179,7 +186,7 @@ public class HurlStack implements HttpStack {
         HttpURLConnection connection = createConnection(url);
 
         int timeoutMs = request.getTimeoutMs();
-        connection.setConnectTimeout(5000);
+        connection.setConnectTimeout(timeoutMs);
         connection.setReadTimeout(timeoutMs);
         connection.setUseCaches(false);
         connection.setDoInput(true);
@@ -196,6 +203,24 @@ public class HurlStack implements HttpStack {
     /* package */ static void setConnectionParametersForRequest(HttpURLConnection connection,
             Request<?> request) throws IOException, AuthFailureError {
         switch (request.getMethod()) {
+            case Method.DEPRECATED_GET_OR_POST:
+                // This is the deprecated way that needs to be handled for backwards compatibility.
+                // If the request's post body is null, then the assumption is that the request is
+                // GET.  Otherwise, it is assumed that the request is a POST.
+                byte[] postBody = request.getPostBody();
+                if (postBody != null) {
+                    // Prepare output. There is no need to set Content-Length explicitly,
+                    // since this is handled by HttpURLConnection using the size of the prepared
+                    // output stream.
+                    connection.setDoOutput(true);
+                    connection.setRequestMethod("POST");
+                    connection.addRequestProperty(HEADER_CONTENT_TYPE,
+                            request.getPostBodyContentType());
+                    DataOutputStream out = new DataOutputStream(connection.getOutputStream());
+                    out.write(postBody);
+                    out.close();
+                }
+                break;
             case Method.GET:
                 // Not necessary to set the request method because connection defaults to GET but
                 // being explicit here.
@@ -232,12 +257,12 @@ public class HurlStack implements HttpStack {
 
     private static void addBodyIfExists(HttpURLConnection connection, Request<?> request)
             throws IOException, AuthFailureError {
-        HttpEntity body = request.getBody();
+        byte[] body = request.getBody();
         if (body != null) {
             connection.setDoOutput(true);
             connection.addRequestProperty(HEADER_CONTENT_TYPE, request.getBodyContentType());
             DataOutputStream out = new DataOutputStream(connection.getOutputStream());
-            body.writeTo(out);
+            out.write(body);
             out.close();
         }
     }

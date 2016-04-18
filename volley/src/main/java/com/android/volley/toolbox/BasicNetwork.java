@@ -19,8 +19,9 @@ package com.android.volley.toolbox;
 import android.os.SystemClock;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.Cache;
 import com.android.volley.Cache.Entry;
-import com.android.volley.CanceledError;
+import com.android.volley.ClientError;
 import com.android.volley.Network;
 import com.android.volley.NetworkError;
 import com.android.volley.NetworkResponse;
@@ -120,10 +121,7 @@ public class BasicNetwork implements Network {
 
                 // Some responses such as 204s do not have content.  We must check.
                 if (httpResponse.getEntity() != null) {
-                    responseContents=request.handleRawResponse(httpResponse);
-                    if(responseContents==null){
-                        responseContents = entityToBytes(httpResponse.getEntity());
-                    }
+                  responseContents = entityToBytes(httpResponse.getEntity());
                 } else {
                   // Add 0 byte response as a way of honestly representing a
                   // no-content request.
@@ -146,18 +144,14 @@ public class BasicNetwork implements Network {
             } catch (MalformedURLException e) {
                 throw new RuntimeException("Bad URL " + request.getUrl(), e);
             } catch (IOException e) {
-                if(request.isCanceled()){
-                    throw new CanceledError(e.getMessage());
-                }
-
-                int statusCode = 0;
-                NetworkResponse networkResponse = null;
+                int statusCode;
                 if (httpResponse != null) {
                     statusCode = httpResponse.getStatusLine().getStatusCode();
                 } else {
                     throw new NoConnectionError(e);
                 }
                 VolleyLog.e("Unexpected response code %d for %s", statusCode, request.getUrl());
+                NetworkResponse networkResponse;
                 if (responseContents != null) {
                     networkResponse = new NetworkResponse(statusCode, responseContents,
                             responseHeaders, false, SystemClock.elapsedRealtime() - requestStart);
@@ -165,12 +159,22 @@ public class BasicNetwork implements Network {
                             statusCode == HttpStatus.SC_FORBIDDEN) {
                         attemptRetryOnException("auth",
                                 request, new AuthFailureError(networkResponse));
+                    } else if (statusCode >= 400 && statusCode <= 499) {
+                        // Don't retry other client errors.
+                        throw new ClientError(networkResponse);
+                    } else if (statusCode >= 500 && statusCode <= 599) {
+                        if (request.shouldRetryServerErrors()) {
+                            attemptRetryOnException("server",
+                                    request, new ServerError(networkResponse));
+                        } else {
+                            throw new ServerError(networkResponse);
+                        }
                     } else {
-                        // TODO: Only throw ServerError for 5xx status codes.
+                        // 3xx? No reason to retry.
                         throw new ServerError(networkResponse);
                     }
                 } else {
-                    throw new NetworkError(e);
+                    attemptRetryOnException("network", request, new NetworkError());
                 }
             }
         }
@@ -209,7 +213,7 @@ public class BasicNetwork implements Network {
         request.addMarker(String.format("%s-retry [timeout=%s]", logPrefix, oldTimeout));
     }
 
-    private void addCacheHeaders(Map<String, String> headers, Entry entry) {
+    private void addCacheHeaders(Map<String, String> headers, Cache.Entry entry) {
         // If there's no cache entry, we're done.
         if (entry == null) {
             return;

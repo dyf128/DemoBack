@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 The Android Open Source Project
+ * Copyright (C) 2015 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,19 @@
 package com.android.volley;
 
 /**
- * Indicates that the connection or the socket timed out.
+ * Indicates that the server responded with an error response indicating that the client has erred.
+ *
+ * For backwards compatibility, extends ServerError which used to be thrown for all server errors,
+ * including 4xx error codes indicating a client error.
  */
 @SuppressWarnings("serial")
-public class TimeoutError extends VolleyError { }
+public class ClientError extends ServerError {
+    public ClientError(NetworkResponse networkResponse) {
+        super(networkResponse);
+    }
+
+    public ClientError() {
+        super();
+    }
+}
+

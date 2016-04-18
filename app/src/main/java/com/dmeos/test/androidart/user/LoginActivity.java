@@ -52,7 +52,7 @@ public class LoginActivity extends BaseActivity implements IUserView {
             @Override
             public void onClick(View v) {
                 if (canSubmmit()) {
-                    mLoginPresenter.doLogin(mEmailView.getText().toString(), mPasswordView.getText().toString(), TAG);
+                    mLoginPresenter.doLogin(mEmailView.getText().toString().trim(), mPasswordView.getText().toString().trim(), TAG);
                 }
             }
         });

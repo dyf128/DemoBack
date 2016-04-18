@@ -227,7 +227,6 @@ public class RequestQueue {
     public <T> Request<T> add(Request<T> request) {
         // Tag the request as belonging to this queue and add it to the set of current requests.
         request.setRequestQueue(this);
-        request.setResponseDelivery(mDelivery);
         synchronized (mCurrentRequests) {
             mCurrentRequests.add(request);
         }

@@ -1,6 +1,7 @@
 package com.dmeos.test.androidart.net;
 
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
@@ -89,14 +90,21 @@ public abstract class AbstractRequest<T> extends Request<T> {
         return requestMethod;
     }
 
-    public Map<String, String> getParams() {
+    @Override
+    protected Map<String, String> getParams() throws AuthFailureError {
         return postParams;
     }
 
     @Override
     public Map<String, String> getHeaders() {
         Map<String, String> generalHeaders = new HashMap<>();
-        return generalHeaders;
+        generalHeaders.put("platform","Android");
+        if (headers != null) {
+            headers.putAll(generalHeaders);
+        } else {
+            headers = generalHeaders;
+        }
+        return headers;
     }
 
     @Override

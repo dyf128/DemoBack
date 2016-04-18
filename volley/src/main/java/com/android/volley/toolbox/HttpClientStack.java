@@ -33,6 +33,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpTrace;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
@@ -93,6 +94,22 @@ public class HttpClientStack implements HttpStack {
     /* protected */ static HttpUriRequest createHttpRequest(Request<?> request,
             Map<String, String> additionalHeaders) throws AuthFailureError {
         switch (request.getMethod()) {
+            case Method.DEPRECATED_GET_OR_POST: {
+                // This is the deprecated way that needs to be handled for backwards compatibility.
+                // If the request's post body is null, then the assumption is that the request is
+                // GET.  Otherwise, it is assumed that the request is a POST.
+                byte[] postBody = request.getPostBody();
+                if (postBody != null) {
+                    HttpPost postRequest = new HttpPost(request.getUrl());
+                    postRequest.addHeader(HEADER_CONTENT_TYPE, request.getPostBodyContentType());
+                    HttpEntity entity;
+                    entity = new ByteArrayEntity(postBody);
+                    postRequest.setEntity(entity);
+                    return postRequest;
+                } else {
+                    return new HttpGet(request.getUrl());
+                }
+            }
             case Method.GET:
                 return new HttpGet(request.getUrl());
             case Method.DELETE:
@@ -128,8 +145,9 @@ public class HttpClientStack implements HttpStack {
 
     private static void setEntityIfNonEmptyBody(HttpEntityEnclosingRequestBase httpRequest,
             Request<?> request) throws AuthFailureError {
-        HttpEntity entity = request.getBody();
-        if (entity != null) {
+        byte[] body = request.getBody();
+        if (body != null) {
+            HttpEntity entity = new ByteArrayEntity(body);
             httpRequest.setEntity(entity);
         }
     }

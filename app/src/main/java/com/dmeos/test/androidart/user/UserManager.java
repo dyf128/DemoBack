@@ -19,6 +19,7 @@ public class UserManager {
 //        GsonRequest request = new GsonRequest<Result<User>>(url, new TypeToken<Result<User>>() {
 //        }.getType(), listener);
         JsonObjectRequest request = new JsonObjectRequest(url, listener);
+        request.setPostParams(params);
         request.setTag(requestTag);
         request.doequest();
     }

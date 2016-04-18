@@ -69,34 +69,6 @@ public class ExecutorDelivery implements ResponseDelivery {
         mResponsePoster.execute(new ResponseDeliveryRunnable(request, response, null));
     }
 
-    @Override
-    public void postProgress(Request<?> request, boolean isUpload, long current,long total) {
-        request.addMarker("post-progress");
-        mResponsePoster.execute(new ProgressDeliveryRunnable(request,isUpload, current, total));
-    }
-
-    private class ProgressDeliveryRunnable implements Runnable {
-        private final Request mRequest;
-        private final boolean isUpload;
-        private final long total;
-        private final long current;
-
-        public ProgressDeliveryRunnable(Request request, boolean isUpload,long current, long total) {
-            mRequest = request;
-            this.isUpload=isUpload;
-            this.total=total;
-            this.current=current;
-        }
-
-        @Override
-        public void run() {
-            if (mRequest.isCanceled()) {
-                return;
-            }
-            mRequest.deliverProgress(isUpload,current,total);
-        }
-    }
-
     /**
      * A Runnable used for delivering network responses to a listener on the
      * main thread.

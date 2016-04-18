@@ -133,9 +133,7 @@ public class NetworkDispatcher extends Thread {
                 // Post the response back.
                 request.markDelivered();
                 mDelivery.postResponse(request, response);
-            }catch (CanceledError canceledError) {
-                request.finish("network-discard-cancelled2");
-            }catch (VolleyError volleyError) {
+            } catch (VolleyError volleyError) {
                 volleyError.setNetworkTimeMs(SystemClock.elapsedRealtime() - startTimeMs);
                 parseAndDeliverNetworkError(request, volleyError);
             } catch (Exception e) {

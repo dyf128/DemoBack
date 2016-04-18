@@ -24,18 +24,9 @@ import android.text.TextUtils;
 
 import com.android.volley.VolleyLog.MarkerLog;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.message.BasicNameValuePair;
-
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -54,6 +45,7 @@ public abstract class Request<T> implements Comparable<Request<T>> {
      * Supported request methods.
      */
     public interface Method {
+        int DEPRECATED_GET_OR_POST = -1;
         int GET = 0;
         int POST = 1;
         int PUT = 2;
@@ -64,9 +56,7 @@ public abstract class Request<T> implements Comparable<Request<T>> {
         int PATCH = 7;
     }
 
-    /**
-     * An event log tracing the lifetime of this request; for debugging.
-     */
+    /** An event log tracing the lifetime of this request; for debugging. */
     private final MarkerLog mEventLog = MarkerLog.ENABLED ? new MarkerLog() : null;
 
     /**
@@ -75,51 +65,34 @@ public abstract class Request<T> implements Comparable<Request<T>> {
      */
     private final int mMethod;
 
-    /**
-     * URL of this request.
-     */
+    /** URL of this request. */
     private final String mUrl;
 
-    /**
-     * Default tag for {@link TrafficStats}.
-     */
+    /** Default tag for {@link TrafficStats}. */
     private final int mDefaultTrafficStatsTag;
 
-    /**
-     * Listener interface for errors.
-     */
+    /** Listener interface for errors. */
     private final Response.ErrorListener mErrorListener;
 
-    private Response.LoadingListener mLoadingListener;
-
-    /**
-     * Sequence number of this request, used to enforce FIFO ordering.
-     */
+    /** Sequence number of this request, used to enforce FIFO ordering. */
     private Integer mSequence;
 
-    /**
-     * The request queue this request is associated with.
-     */
+    /** The request queue this request is associated with. */
     private RequestQueue mRequestQueue;
 
-    /**
-     * Whether or not responses to this request should be cached.
-     */
+    /** Whether or not responses to this request should be cached. */
     private boolean mShouldCache = true;
 
-    /**
-     * Whether or not this request has been canceled.
-     */
+    /** Whether or not this request has been canceled. */
     private boolean mCanceled = false;
 
-    /**
-     * Whether or not a response has been delivered for this request yet.
-     */
+    /** Whether or not a response has been delivered for this request yet. */
     private boolean mResponseDelivered = false;
 
-    /**
-     * The retry policy for this request.
-     */
+    /** Whether the request should be retried in the event of an HTTP 5xx (server) error. */
+    private boolean mShouldRetryServerErrors = false;
+
+    /** The retry policy for this request. */
     private RetryPolicy mRetryPolicy;
 
     /**
@@ -129,14 +102,21 @@ public abstract class Request<T> implements Comparable<Request<T>> {
      */
     private Cache.Entry mCacheEntry = null;
 
-    /**
-     * An opaque token tagging this request; used for bulk cancellation.
-     */
+    /** An opaque token tagging this request; used for bulk cancellation. */
     private Object mTag;
 
-    private ResponseDelivery mResponseDelivery;
-
-    private RequestParams mRequestParams;
+    /**
+     * Creates a new request with the given URL and error listener.  Note that
+     * the normal response listener is not provided here as delivery of responses
+     * is provided by subclasses, who have a better idea of how to deliver an
+     * already-parsed response.
+     *
+     * @deprecated Use {@link #Request(int, String, com.android.volley.Response.ErrorListener)}.
+     */
+    @Deprecated
+    public Request(String url, Response.ErrorListener listener) {
+        this(Method.DEPRECATED_GET_OR_POST, url, listener);
+    }
 
     /**
      * Creates a new request with the given method (one of the values from {@link Method}),
@@ -173,17 +153,10 @@ public abstract class Request<T> implements Comparable<Request<T>> {
 
     /**
      * Returns this request's tag.
-     *
      * @see Request#setTag(Object)
      */
     public Object getTag() {
         return mTag;
-    }
-
-
-    public Request<?> setLoadingListener(Response.LoadingListener loadingListener){
-        mLoadingListener=loadingListener;
-        return this;
     }
 
     /**
@@ -216,11 +189,6 @@ public abstract class Request<T> implements Comparable<Request<T>> {
         return 0;
     }
 
-    public Request<?> setResponseDelivery(ResponseDelivery delivery) {
-        mResponseDelivery = delivery;
-        return this;
-    }
-
     /**
      * Sets the retry policy for this request.
      *
@@ -242,16 +210,13 @@ public abstract class Request<T> implements Comparable<Request<T>> {
 
     /**
      * Notifies the request queue that this request has finished (successfully or with error).
-     * <p>
+     *
      * <p>Also dumps all events from this request's event log; for debugging.</p>
      */
     void finish(final String tag) {
-        mBody=null;
         if (mRequestQueue != null) {
             mRequestQueue.finish(this);
         }
-
-
         if (MarkerLog.ENABLED) {
             final long threadId = Thread.currentThread().getId();
             if (Looper.myLooper() != Looper.getMainLooper()) {
@@ -354,44 +319,97 @@ public abstract class Request<T> implements Comparable<Request<T>> {
      * Returns a list of extra HTTP headers to go along with this request. Can
      * throw {@link AuthFailureError} as authentication may be required to
      * provide these values.
-     *
      * @throws AuthFailureError In the event of auth failure
      */
     public Map<String, String> getHeaders() throws AuthFailureError {
         return Collections.emptyMap();
     }
 
-
     /**
-     * Returns a Map of parameters to be used for a POST or PUT request.
-     * <p>Note that you can directly override {@link #getBody()} for custom data.</p>
+     * Returns a Map of POST parameters to be used for this request, or null if
+     * a simple GET should be used.  Can throw {@link AuthFailureError} as
+     * authentication may be required to provide these values.
+     *
+     * <p>Note that only one of getPostParams() and getPostBody() can return a non-null
+     * value.</p>
+     * @throws AuthFailureError In the event of auth failure
+     *
+     * @deprecated Use {@link #getParams()} instead.
      */
-    protected RequestParams getRequestParams(){
-        return mRequestParams;
+    @Deprecated
+    protected Map<String, String> getPostParams() throws AuthFailureError {
+        return getParams();
     }
 
-    public void setRequestParams(RequestParams requestParams) {
-        mRequestParams = requestParams;
+    /**
+     * Returns which encoding should be used when converting POST parameters returned by
+     * {@link #getPostParams()} into a raw POST body.
+     *
+     * <p>This controls both encodings:
+     * <ol>
+     *     <li>The string encoding used when converting parameter names and values into bytes prior
+     *         to URL encoding them.</li>
+     *     <li>The string encoding used when converting the URL encoded parameters into a raw
+     *         byte array.</li>
+     * </ol>
+     *
+     * @deprecated Use {@link #getParamsEncoding()} instead.
+     */
+    @Deprecated
+    protected String getPostParamsEncoding() {
+        return getParamsEncoding();
+    }
 
-        RequestParams params = getRequestParams();
-        if (params != null) {
-            Map<String, RequestParams.FileContent> filesParams = params.getFilesParams();
-            if(filesParams!=null && !filesParams.isEmpty()){
-                setRetryPolicy(new DefaultRetryPolicy(600000,0,1f));
-            }
+    /**
+     * @deprecated Use {@link #getBodyContentType()} instead.
+     */
+    @Deprecated
+    public String getPostBodyContentType() {
+        return getBodyContentType();
+    }
+
+    /**
+     * Returns the raw POST body to be sent.
+     *
+     * @throws AuthFailureError In the event of auth failure
+     *
+     * @deprecated Use {@link #getBody()} instead.
+     */
+    @Deprecated
+    public byte[] getPostBody() throws AuthFailureError {
+        // Note: For compatibility with legacy clients of volley, this implementation must remain
+        // here instead of simply calling the getBody() function because this function must
+        // call getPostParams() and getPostParamsEncoding() since legacy clients would have
+        // overridden these two member functions for POST requests.
+        Map<String, String> postParams = getPostParams();
+        if (postParams != null && postParams.size() > 0) {
+            return encodeParameters(postParams, getPostParamsEncoding());
         }
+        return null;
+    }
+
+    /**
+     * Returns a Map of parameters to be used for a POST or PUT request.  Can throw
+     * {@link AuthFailureError} as authentication may be required to provide these values.
+     *
+     * <p>Note that you can directly override {@link #getBody()} for custom data.</p>
+     *
+     * @throws AuthFailureError in the event of auth failure
+     */
+    protected Map<String, String> getParams() throws AuthFailureError {
+        return null;
     }
 
     /**
      * Returns which encoding should be used when converting POST or PUT parameters returned by
-     * {@link #getRequestParams()} into a raw POST or PUT body.
-     * <p>
+     * {@link #getParams()} into a raw POST or PUT body.
+     *
      * <p>This controls both encodings:
      * <ol>
-     * <li>The string encoding used when converting parameter names and values into bytes prior
-     * to URL encoding them.</li>
-     * <li>The string encoding used when converting the URL encoded parameters into a raw
-     * byte array.</li>
+     *     <li>The string encoding used when converting parameter names and values into bytes prior
+     *         to URL encoding them.</li>
+     *     <li>The string encoding used when converting the URL encoded parameters into a raw
+     *         byte array.</li>
      * </ol>
      */
     protected String getParamsEncoding() {
@@ -402,73 +420,24 @@ public abstract class Request<T> implements Comparable<Request<T>> {
      * Returns the content type of the POST or PUT body.
      */
     public String getBodyContentType() {
-        createHttpEntityIfNeed();
-        if(mBody!=null){
-            return mBody.getContentType().getValue();
-        }
         return "application/x-www-form-urlencoded; charset=" + getParamsEncoding();
-    }
-
-    private HttpEntity mBody;
-
-    private HttpEntity createHttpEntityIfNeed(){
-        if(mBody!=null){
-            return mBody;
-        }
-
-        RequestParams params = getRequestParams();
-        if (params != null) {
-            Map<String, RequestParams.StringContent> stringsParams = params.getStringsParams();
-            Map<String, RequestParams.FileContent> filesParams = params.getFilesParams();
-
-            if(filesParams!=null && !filesParams.isEmpty()){
-            SimpleMultipartEntity multipartEntity=new SimpleMultipartEntity(this);
-
-                if (stringsParams != null) {
-                    for(String key:stringsParams.keySet()){
-                        RequestParams.StringContent stringContent=stringsParams.get(key);
-                        multipartEntity.addPartWithCharset(key, stringContent.getValue(), stringContent.getCharset());
-                    }
-                }
-
-                for(String key:filesParams.keySet()){
-                    RequestParams.FileContent fileContent=filesParams.get(key);
-                    multipartEntity.addPart(key,fileContent.getFile(),fileContent.getMimeType());
-                }
-                mBody=multipartEntity;
-            }else {
-                if (stringsParams != null && !stringsParams.isEmpty()) {
-                    try {
-                        mBody= new UrlEncodedFormEntity(buildParams(stringsParams), getParamsEncoding());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-        return null;
     }
 
     /**
      * Returns the raw POST or PUT body to be sent.
-     * <p>
+     *
      * <p>By default, the body consists of the request parameters in
      * application/x-www-form-urlencoded format. When overriding this method, consider overriding
      * {@link #getBodyContentType()} as well to match the new body format.
      *
      * @throws AuthFailureError in the event of auth failure
      */
-    public HttpEntity getBody() throws AuthFailureError {
-        createHttpEntityIfNeed();
-        return mBody;
-    }
-
-    private List<NameValuePair> buildParams(Map<String, RequestParams.StringContent> postParams) {
-        List<NameValuePair> result = new ArrayList<NameValuePair>(postParams.size());
-        for (String key : postParams.keySet()) {
-            result.add(new BasicNameValuePair(key, postParams.get(key).getValue()));
+    public byte[] getBody() throws AuthFailureError {
+        Map<String, String> params = getParams();
+        if (params != null && params.size() > 0) {
+            return encodeParameters(params, getParamsEncoding());
         }
-        return result;
+        return null;
     }
 
     /**
@@ -504,6 +473,23 @@ public abstract class Request<T> implements Comparable<Request<T>> {
      */
     public final boolean shouldCache() {
         return mShouldCache;
+    }
+
+    /**
+     * Sets whether or not the request should be retried in the event of an HTTP 5xx (server) error.
+     *
+     * @return This Request object to allow for chaining.
+     */
+    public final Request<?> setShouldRetryServerErrors(boolean shouldRetryServerErrors) {
+        mShouldRetryServerErrors = shouldRetryServerErrors;
+        return this;
+    }
+
+    /**
+     * Returns true if this request should be retried in the event of an HTTP 5xx (server) error.
+     */
+    public final boolean shouldRetryServerErrors() {
+        return mShouldRetryServerErrors;
     }
 
     /**
@@ -560,7 +546,6 @@ public abstract class Request<T> implements Comparable<Request<T>> {
      * and return an appropriate response type. This method will be
      * called from a worker thread.  The response will not be delivered
      * if you return null.
-     *
      * @param response Response from the network
      * @return The parsed response, or null in the case of an error
      */
@@ -568,7 +553,7 @@ public abstract class Request<T> implements Comparable<Request<T>> {
 
     /**
      * Subclasses can override this method to parse 'networkError' and return a more specific error.
-     * <p>
+     *
      * <p>The default implementation just returns the passed 'networkError'.</p>
      *
      * @param volleyError the error retrieved from the network
@@ -582,21 +567,10 @@ public abstract class Request<T> implements Comparable<Request<T>> {
      * Subclasses must implement this to perform delivery of the parsed
      * response to their listeners.  The given response is guaranteed to
      * be non-null; responses that fail to parse are not delivered.
-     *
      * @param response The parsed response returned by
-     *                 {@link #parseNetworkResponse(NetworkResponse)}
+     * {@link #parseNetworkResponse(NetworkResponse)}
      */
     abstract protected void deliverResponse(T response);
-
-    /**
-     * override this to prevent default function: entity to bytes
-     *
-     * @param httpResponse
-     * @return byte[] return null if you do not handle this
-     */
-    public byte[] handleRawResponse(HttpResponse httpResponse) throws IOException, ServerError, CanceledError {
-        return null;
-    }
 
     /**
      * Delivers error message to the ErrorListener that the Request was
@@ -607,18 +581,6 @@ public abstract class Request<T> implements Comparable<Request<T>> {
     public void deliverError(VolleyError error) {
         if (mErrorListener != null) {
             mErrorListener.onErrorResponse(error);
-        }
-    }
-
-    protected void deliverProgress(boolean isUpload, long current, long total) {
-        if(mLoadingListener!=null){
-            mLoadingListener.onLoading(isUpload,total,current);
-        }
-    }
-
-    public void postProgress(boolean isUpload, long current, long total) {
-        if (mLoadingListener!=null && mResponseDelivery != null) {
-            mResponseDelivery.postProgress(this, isUpload, current, total);
         }
     }
 
@@ -643,9 +605,5 @@ public abstract class Request<T> implements Comparable<Request<T>> {
         String trafficStatsTag = "0x" + Integer.toHexString(getTrafficStatsTag());
         return (mCanceled ? "[X] " : "[ ] ") + getUrl() + " " + trafficStatsTag + " "
                 + getPriority() + " " + mSequence;
-    }
-
-    public void log(String tag, String msg, Throwable throwable) {
-        VolleyLog.e(throwable,"%s:%s",tag,msg);
     }
 }
