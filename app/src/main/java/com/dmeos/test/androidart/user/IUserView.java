@@ -6,5 +6,5 @@ import com.dmeos.test.androidart.base.LoadDataView;
 
 public interface IUserView extends LoadDataView {
 
-    void onLoadUserDatauccess(int code, String message, User user);
+    void onLoadUserDataSuccess(int code, String message, User user);
 }

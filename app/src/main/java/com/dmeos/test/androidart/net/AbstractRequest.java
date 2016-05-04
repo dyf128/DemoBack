@@ -128,7 +128,7 @@ public abstract class AbstractRequest<T> extends Request<T> {
         }
     }
 
-    public void doequest() {
+    public void dorequest() {
         RequestService.addToQueue(this);
     }
 }

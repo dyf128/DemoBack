@@ -20,14 +20,14 @@ import java.util.Enumeration;
  */
 public class NetUtil {
 
-    private static boolean hasNet = false;
+    private static boolean HAS_NET = false;
 
     public static boolean isNetworkConnected() {
-        return hasNet;
+        return HAS_NET;
     }
 
     public static void setHasNet(boolean hasNet) {
-        NetUtil.hasNet = hasNet;
+        NetUtil.HAS_NET = hasNet;
         if (hasNet) {
 
         }
@@ -289,7 +289,7 @@ public class NetUtil {
     }
 
     public static String httpRequestErrorMsg(int statusCode) {
-        String message = "";
+        String message = Constants.NET_REQUEST_ERROR_MSG_UNKNOW;
         if (statusCode >= Constants.NET_REQUEST_ERROR_CODE_500) {
             message = Constants.NET_REQUEST_ERROR_MSG_500;
         }

@@ -6,6 +6,8 @@ import com.android.volley.ParseError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
+import com.dmeos.test.androidart.utils.Constants;
+import com.dmeos.test.androidart.utils.LogUtils;
 import com.dmeos.test.androidart.utils.NetUtil;
 
 import org.json.JSONException;
@@ -25,17 +27,20 @@ public class JsonObjectRequest extends AbstractRequest<JSONObject> {
 
     @Override
     protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
-        JSONObject jsonObject = null;
+        JSONObject jsonObject;
         try {
             String json = new String(response.data,
                     HttpHeaderParser.parseCharset(response.headers));
             jsonObject = new JSONObject(json);
+            if (Constants.IS_DEBUG) {
+                LogUtils.i(json);
+            }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-            Response.error(new ParseError());
+            return Response.error(new ParseError(e));
         } catch (JSONException e) {
             e.printStackTrace();
-            Response.error(new ParseError());
+            return Response.error(new ParseError(e));
         }
         return Response.success(jsonObject,
                 HttpHeaderParser.parseCacheHeaders(response));
@@ -53,10 +58,21 @@ public class JsonObjectRequest extends AbstractRequest<JSONObject> {
     private Response.ErrorListener errorListener = new Response.ErrorListener() {
         @Override
         public void onErrorResponse(VolleyError error) {
-            NetworkResponse response = error.networkResponse;
-            if (response != null) {
-                responseCallback.onFailure(response.statusCode, NetUtil.httpRequestErrorMsg(response.statusCode));
+            /* 处理请求异常信息 */
+            if (error == null) {
+                responseCallback.onFailure(-1, Constants.NET_REQUEST_ERROR_MSG_UNKNOW);
+                return;
             }
+            NetworkResponse response = error.networkResponse;
+            if (response == null) {
+                if(error instanceof ParseError) {
+                    responseCallback.onFailure(-1, Constants.NET_REQUEST_ERROR_MSG_PARSE_ERROR);
+                } else {
+                    responseCallback.onFailure(-1, Constants.NET_REQUEST_ERROR_MSG_UNKNOW);
+                }
+                return;
+            }
+            responseCallback.onFailure(response.statusCode, NetUtil.httpRequestErrorMsg(response.statusCode));
         }
     };
 

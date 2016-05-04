@@ -41,6 +41,7 @@ public class UserPresenterImpl implements IUserPresenter, ResponseCallback {
 
     @Override
     public void onSuccess(int code, String message, Object data) {
+        loginView.hideProgress();
         if (data instanceof Result) {
             loginView.onLoadUserDatauccess(code, message, (User)((Result) data).data);
         } else {

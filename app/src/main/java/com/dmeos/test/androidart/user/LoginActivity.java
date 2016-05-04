@@ -91,7 +91,7 @@ public class LoginActivity extends BaseActivity implements IUserView {
     }
 
     @Override
-    public void onLoadUserDatauccess(int code, String message, User user) {
+    public void onLoadUserDataSuccess(int code, String message, User user) {
         // TODO 登录成功回调 保存用户信息 跳转页面相关操作
         Intent intent = new Intent(LoginActivity.this, RegActivity.class);
         startActivity(intent);

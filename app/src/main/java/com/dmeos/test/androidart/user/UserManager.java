@@ -21,7 +21,7 @@ public class UserManager {
         JsonObjectRequest request = new JsonObjectRequest(url, listener);
         request.setPostParams(params);
         request.setTag(requestTag);
-        request.doequest();
+        request.dorequest();
     }
 
     public void getUserInfoById(String id, ResponseCallback listener) {

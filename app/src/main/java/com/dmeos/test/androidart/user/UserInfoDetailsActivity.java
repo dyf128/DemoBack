@@ -48,7 +48,7 @@ public class UserInfoDetailsActivity extends BaseActivity implements IUserView
     }
 
     @Override
-    public void onLoadUserDatauccess(int code, String message, User user) {
+    public void onLoadUserDataSuccess(int code, String message, User user) {
         // TODO 填充页面数据
         mUser = user;
         updateUserView(mUser);

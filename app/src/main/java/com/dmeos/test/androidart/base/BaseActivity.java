@@ -96,7 +96,7 @@ public abstract class BaseActivity extends FragmentActivity {
      * 加载数据显示Loading dialog
      */
     public void showBlockLoadingDailogView() {
-
+        
     }
 
     /**
