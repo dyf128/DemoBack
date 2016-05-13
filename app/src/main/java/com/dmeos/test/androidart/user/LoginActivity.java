@@ -69,7 +69,7 @@ public class LoginActivity extends BaseActivity implements IUserView {
                 }
             }
         });
-        testFFmpegInfo();
+        //testFFmpegInfo();
     }
 
     /**
