@@ -72,14 +72,10 @@ public class GsonRequest<T extends Result> extends AbstractRequest<T> {
             }
             NetworkResponse response = error.networkResponse;
             if (response == null) {
-                if(error instanceof ParseError) {
-                    responseCallback.onFailure(-1, Constants.NET_REQUEST_ERROR_MSG_PARSE_ERROR);
-                } else {
-                    responseCallback.onFailure(-1, Constants.NET_REQUEST_ERROR_MSG_UNKNOW);
-                }
+                responseCallback.onFailure(-1,  NetUtil.httpVolleyExceptionInfo(error));
                 return;
             }
-            responseCallback.onFailure(response.statusCode, NetUtil.httpRequestErrorMsg(response.statusCode));
+            responseCallback.onFailure(response.statusCode, NetUtil.httpResponseErrorMsg(response.statusCode));
         }
     };
 

@@ -9,6 +9,10 @@ import android.net.NetworkInfo;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 
+import com.android.volley.ParseError;
+import com.android.volley.TimeoutError;
+import com.android.volley.VolleyError;
+
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -288,7 +292,20 @@ public class NetUtil {
         return null;
     }
 
-    public static String httpRequestErrorMsg(int statusCode) {
+    public static String httpVolleyExceptionInfo(VolleyError error) {
+        String message = Constants.NET_REQUEST_ERROR_MSG_UNKNOW;
+        if (error != null) {
+            if(error instanceof ParseError) {
+                message = Constants.NET_REQUEST_ERROR_MSG_PARSE_ERROR;
+            }
+            if (error instanceof TimeoutError) {
+                message = Constants.NET_REQUEST_ERROR_MSG_TIMEOUT_ERROR;
+            }
+        }
+        return message;
+    }
+
+    public static String httpResponseErrorMsg(int statusCode) {
         String message = Constants.NET_REQUEST_ERROR_MSG_UNKNOW;
         if (statusCode >= Constants.NET_REQUEST_ERROR_CODE_500) {
             message = Constants.NET_REQUEST_ERROR_MSG_500;

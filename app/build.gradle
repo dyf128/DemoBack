@@ -4,24 +4,37 @@ android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
 
+
+    //android.useDeprecateNdk = true
     defaultConfig {
         applicationId "com.dmeos.test.androidart"
         minSdkVersion 14
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+
+        ndk {
+            abiFilter "armeabi"
+            moduleName "ffmpegvideotool" // 这个是C文件的名字
+            ldLibs "log", "z", "m", "jnigraphics", "android"
+            abiFilters "armeabi", "armeabi-v7a", "x86"
+        }
     }
     buildTypes {
         release {
+            buildConfigField("String", "API_HOST", "\"http://online.example.com/api/v1\"")
+            buildConfigField("boolean", "IS_DEBUG", "false")
             minifyEnabled false
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 
+
     sourceSets {
         main {
             jniLibs.srcDirs = ['libs']
-            jni.srcDirs = []
+//            jni.srcDirs = ['jni']
         }
     }
 

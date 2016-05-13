@@ -39,7 +39,7 @@ public interface HttpStack {
      *         {@link Request#getHeaders()}
      * @return the HTTP response
      */
-    public HttpResponse performRequest(Request<?> request, Map<String, String> additionalHeaders)
+    public khandroid.ext.apache.http.HttpResponse performRequest(Request<?> request, Map<String, String> additionalHeaders)
         throws IOException, AuthFailureError;
 
 }

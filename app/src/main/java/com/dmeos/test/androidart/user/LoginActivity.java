@@ -7,11 +7,21 @@ import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.dmeos.test.androidart.R;
+import com.dmeos.test.androidart.base.AppApplication;
 import com.dmeos.test.androidart.base.BaseActivity;
 import com.dmeos.test.androidart.module.User;
+import com.dmeos.test.androidart.utils.Clip;
+import com.dmeos.test.androidart.utils.FfmpegController;
+import com.dmeos.test.androidart.utils.FileUtils;
+import com.dmeos.test.androidart.utils.LogUtils;
+import com.dmeos.test.androidart.utils.ShellUtils;
+import com.dmeos.test.androidart.utils.VideoTool;
 import com.dmeos.test.androidart.widget.TitleBar;
+
+import java.io.File;
 
 
 public class LoginActivity extends BaseActivity implements IUserView {
@@ -26,6 +36,7 @@ public class LoginActivity extends BaseActivity implements IUserView {
     private Button mEmailSignInButton;
     private TitleBar mTitleBar;
     private IUserPresenter mLoginPresenter;
+    private TextView mTxtInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +56,7 @@ public class LoginActivity extends BaseActivity implements IUserView {
         mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+        mTxtInfo = (TextView) findViewById(R.id.info);
         mTitleBar = getTitlebar();
         mTitleBar.setVisibility(View.VISIBLE);
         mLoginPresenter = new UserPresenterImpl(this);
@@ -52,10 +64,12 @@ public class LoginActivity extends BaseActivity implements IUserView {
             @Override
             public void onClick(View v) {
                 if (canSubmmit()) {
+                    initFfmpeg();
                     mLoginPresenter.doLogin(mEmailView.getText().toString().trim(), mPasswordView.getText().toString().trim(), TAG);
                 }
             }
         });
+        testFFmpegInfo();
     }
 
     /**
@@ -98,6 +112,35 @@ public class LoginActivity extends BaseActivity implements IUserView {
         mLoginPresenter.saveLoginUserInfo(user);
     }
 
+    private void testFFmpegInfo(){
+        VideoTool tool = new VideoTool();
+        mTxtInfo.setText(tool.getStringFromNative());
+    }
+
+    private void initFfmpeg() {
+        File tmpFilePath = new File(FileUtils.getDownloadDir(AppApplication.getContext()));
+        File audioOutpath = new File(FileUtils.getDownloadDir(AppApplication.getContext())+"/test_audio006.wav");
+        try {
+            FfmpegController controller = new FfmpegController(AppApplication.getContext(), tmpFilePath);
+            String videoPath = "/mnt/sdcard/006.mp4";
+            Clip videoClip = new Clip(videoPath);
+            controller.extractAudio(videoClip, "wav", audioOutpath, new ShellUtils.ShellCallback() {
+                @Override
+                public void shellOut(String shellLine) {
+                    LogUtils.i(shellLine);
+                }
+
+                @Override
+                public void processComplete(int exitValue) {
+                    if (exitValue != 0) {
+                        LogUtils.e("exec failure~");
+                    }
+                }
+            });
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }
 

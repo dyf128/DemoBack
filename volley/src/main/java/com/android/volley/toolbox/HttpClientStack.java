@@ -21,7 +21,6 @@ import com.android.volley.Request;
 import com.android.volley.Request.Method;
 
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
@@ -72,7 +71,7 @@ public class HttpClientStack implements HttpStack {
     }
 
     @Override
-    public HttpResponse performRequest(Request<?> request, Map<String, String> additionalHeaders)
+    public khandroid.ext.apache.http.HttpResponse performRequest(Request<?> request, Map<String, String> additionalHeaders)
             throws IOException, AuthFailureError {
         HttpUriRequest httpRequest = createHttpRequest(request, additionalHeaders);
         addHeaders(httpRequest, additionalHeaders);
