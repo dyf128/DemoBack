@@ -6,6 +6,10 @@ package com.dmeos.test.androidart.utils;
 public final class Constants {
 
     public static final boolean IS_DEBUG = true;
+    public static final boolean IS_SEC_REQUEST = false;
+
+    public static final String SSL_INFO_PWD = "test123";
+    public static final int SSL_INFO_PORT = 44401;
 
     public static final String INTENT_DATA_USER_ID = "user_id";
 

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/Volumes/Disk2/WorkSpace/opensourcegit/DemoBackUP/DemoBackUP/app/libs/gson-2.6.1.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="b9d63507329a7178e026fc334f87587ee5070ac5">
+        <dex dex="/Volumes/Disk2/WorkSpace/opensourcegit/DemoBackUP/DemoBackUP/app/build/intermediates/pre-dexed/debug/gson-2.6.1_7bb26cd4ee870073ef3d0fb03452c0a20559e8cf.jar" />
+    </item>
+    <item
+        jar="/Volumes/Disk2/WorkSpace/opensourcegit/DemoBackUP/DemoBackUP/app/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/23.1.1/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="09c5e804bc67fc0580360043dff067df574a60d4">
+        <dex dex="/Volumes/Disk2/WorkSpace/opensourcegit/DemoBackUP/DemoBackUP/app/build/intermediates/pre-dexed/debug/com.android.support-recyclerview-v7-23.1.1_67cb8184d104f8adbf22e3abf21b45f2237833c1.jar" />
+    </item>
+    <item
+        jar="/Volumes/Disk2/WorkSpace/opensourcegit/DemoBackUP/DemoBackUP/app/libs/okhttp-2.6.0.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="212387a39088ecd3daff8e3bfc3bdc4123e33c67">
+        <dex dex="/Volumes/Disk2/WorkSpace/opensourcegit/DemoBackUP/DemoBackUP/app/build/intermediates/pre-dexed/debug/okhttp-2.6.0_2df744146aeebac03d7e70f4dfeae23636e92124.jar" />
+    </item>
+    <item
+        jar="/Volumes/Disk2/DevTools/android-sdk-macosx/extras/android/m2repository/com/android/support/support-annotations/23.1.1/support-annotations-23.1.1.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="8d680ba5a623724d1fb0e81c36a790f023a6cede">
+        <dex dex="/Volumes/Disk2/WorkSpace/opensourcegit/DemoBackUP/DemoBackUP/app/build/intermediates/pre-dexed/debug/support-annotations-23.1.1_29510a3f02af86b0c163d703a48039176fa06afa.jar" />
+    </item>
+    <item
+        jar="/Volumes/Disk2/WorkSpace/opensourcegit/DemoBackUP/DemoBackUP/app/libs/libconceal.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="1820bc0488e8c0230f49a77a66f961fef4c06881">
+        <dex dex="/Volumes/Disk2/WorkSpace/opensourcegit/DemoBackUP/DemoBackUP/app/build/intermediates/pre-dexed/debug/libconceal_001d4e52691beceeee903dc2fa28a60c2399061b.jar" />
+    </item>
+    <item
+        jar="/Volumes/Disk2/WorkSpace/opensourcegit/DemoBackUP/DemoBackUP/app/build/intermediates/exploded-aar/DemoBackUP/volley/unspecified/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="5c69f29e96614e32afde46c8edcdcaf03a6ffad2">
+        <dex dex="/Volumes/Disk2/WorkSpace/opensourcegit/DemoBackUP/DemoBackUP/app/build/intermediates/pre-dexed/debug/DemoBackUP-volley-unspecified_1c8d3f61373fe4b62756afcf829d2b88ffa37ebb.jar" />
+    </item>
+    <item
+        jar="/Volumes/Disk2/WorkSpace/opensourcegit/DemoBackUP/DemoBackUP/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.1/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="5c5699834e9722f1c288fea2de82725d078ba127">
+        <dex dex="/Volumes/Disk2/WorkSpace/opensourcegit/DemoBackUP/DemoBackUP/app/build/intermediates/pre-dexed/debug/com.android.support-appcompat-v7-23.1.1_abe99c616da589af40c1246ed0267ef76a214372.jar" />
+    </item>
+    <item
+        jar="/Volumes/Disk2/WorkSpace/opensourcegit/DemoBackUP/DemoBackUP/app/build/intermediates/exploded-aar/com.android.support/design/23.1.1/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="379471b2bd17d9737c050345c08e8c7d16589784">
+        <dex dex="/Volumes/Disk2/WorkSpace/opensourcegit/DemoBackUP/DemoBackUP/app/build/intermediates/pre-dexed/debug/com.android.support-design-23.1.1_e077ff87873d032b7c0dcdcb9a763360c6be8900.jar" />
+    </item>
+    <item
+        jar="/Volumes/Disk2/WorkSpace/opensourcegit/DemoBackUP/DemoBackUP/app/libs/khandroid-httpclient-4.2.3.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="833efd491363b9391340d073bff8d95c85ff7733">
+        <dex dex="/Volumes/Disk2/WorkSpace/opensourcegit/DemoBackUP/DemoBackUP/app/build/intermediates/pre-dexed/debug/khandroid-httpclient-4.2.3_affaf1670fb65b534e858e7b14d42888bb57410d.jar" />
+    </item>
+    <item
+        jar="/Volumes/Disk2/WorkSpace/opensourcegit/DemoBackUP/DemoBackUP/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.1.1/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="6cbc7773921fcfedbe55657578f0cbfe614778dc">
+        <dex dex="/Volumes/Disk2/WorkSpace/opensourcegit/DemoBackUP/DemoBackUP/app/build/intermediates/pre-dexed/debug/com.android.support-support-v4-23.1.1_d545662de5917d93fe2dc95d2ebb757dfd501979.jar" />
+    </item>
+    <item
+        jar="/Volumes/Disk2/WorkSpace/opensourcegit/DemoBackUP/DemoBackUP/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.1.1/jars/libs/internal_impl-23.1.1.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="a4de9c81ae239414e1ed0f86441b02abaf29bca9">
+        <dex dex="/Volumes/Disk2/WorkSpace/opensourcegit/DemoBackUP/DemoBackUP/app/build/intermediates/pre-dexed/debug/internal_impl-23.1.1_0f3efa1ae4df94e964e611cf7ba49d02a388bb67.jar" />
+    </item>
+
+</items>

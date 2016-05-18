@@ -5,7 +5,11 @@ import android.content.Context;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.dmeos.test.androidart.R;
 import com.dmeos.test.androidart.base.AppApplication;
+import com.dmeos.test.androidart.utils.Constants;
+
+import java.io.InputStream;
 
 /**
  * 所有请求通过该类去加入请求队列执行|取消
@@ -33,6 +37,22 @@ public class RequestService {
         return mRequestQueue;
     }
 
+    private RequestQueue getSSLRequestQueue() {
+        if (mRequestQueue == null) {
+            synchronized (RequestService.class) {
+                if (mRequestQueue == null) {
+                    // Replace R.raw.test with your keystore
+                    Context application = mContext;
+                    InputStream keyStore = application.getResources().openRawResource(R.raw.test);
+                    mRequestQueue = Volley.newRequestQueue(application,
+                            new ExtHttpClientStack(new SslHttpClient(keyStore, Constants.SSL_INFO_PWD, Constants.SSL_INFO_PORT)));
+                }
+            }
+        }
+        return mRequestQueue;
+    }
+
+
     public static void cancel(Object tag) {
         if (tag == null) {
             return;
@@ -50,12 +70,27 @@ public class RequestService {
     }
 
     public <T> void addToRequestQueue(Request<T> req) {
-        getRequestQueue().add(req);
+        getInstance().getRequestQueue().add(req);
     }
 
     public <T> void addToRequestQueue(Request<T> req, String tag) {
         req.setTag(tag);
         addToRequestQueue(req);
     }
+
+
+    public <T> void addToRequestQueue(Request<T> req, boolean isSSLRequest) {
+        if (isSSLRequest) {
+            getSSLRequestQueue().add(req);
+        } else {
+            getRequestQueue().add(req);
+        }
+    }
+
+    public <T> void addToRequestQueue(Request<T> req, String tag,  boolean isSSLRequest) {
+        req.setTag(tag);
+        addToRequestQueue(req, isSSLRequest);
+    }
+
 
 }
