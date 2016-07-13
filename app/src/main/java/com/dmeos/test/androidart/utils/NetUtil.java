@@ -9,7 +9,12 @@ import android.net.NetworkInfo;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.ClientError;
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
 import com.android.volley.ParseError;
+import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 
@@ -300,6 +305,21 @@ public class NetUtil {
             }
             if (error instanceof TimeoutError) {
                 message = Constants.NET_REQUEST_ERROR_MSG_TIMEOUT_ERROR;
+            }
+            if (error instanceof NoConnectionError) {
+                message = Constants.NET_REQUEST_ERROR_MSG_NOCONNECTIONERROR;
+            }
+            if (error instanceof ClientError) {
+                message = Constants.NET_REQUEST_ERROR_MSG_CLIENTERROR;
+            }
+            if (error instanceof ServerError) {
+                message = Constants.NET_REQUEST_ERROR_MSG_SERVERERROR;
+            }
+            if (error instanceof AuthFailureError) {
+                message = Constants.NET_REQUEST_ERROR_MSG_AUTHFAILUREERROR;
+            }
+            if (error instanceof NetworkError) {
+                message = Constants.NET_REQUEST_ERROR_MSG_NETWORKERROR;
             }
         }
         return message;

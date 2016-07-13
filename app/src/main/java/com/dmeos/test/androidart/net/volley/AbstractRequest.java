@@ -1,4 +1,4 @@
-package com.dmeos.test.androidart.net;
+package com.dmeos.test.androidart.net.volley;
 
 
 import com.android.volley.AuthFailureError;

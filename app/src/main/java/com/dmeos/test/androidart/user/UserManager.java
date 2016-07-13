@@ -1,8 +1,8 @@
 package com.dmeos.test.androidart.user;
 
 import com.dmeos.test.androidart.module.User;
-import com.dmeos.test.androidart.net.JsonObjectRequest;
-import com.dmeos.test.androidart.net.ResponseCallback;
+import com.dmeos.test.androidart.net.volley.JsonObjectRequest;
+import com.dmeos.test.androidart.net.volley.ResponseCallback;
 import com.dmeos.test.androidart.utils.Api;
 
 import java.util.HashMap;

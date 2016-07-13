@@ -1,5 +1,7 @@
-package com.dmeos.test.androidart.net;
+package com.dmeos.test.androidart.net.volley;
 
+
+import com.google.gson.Gson;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
@@ -10,7 +12,6 @@ import com.dmeos.test.androidart.module.Result;
 import com.dmeos.test.androidart.utils.Constants;
 import com.dmeos.test.androidart.utils.LogUtils;
 import com.dmeos.test.androidart.utils.NetUtil;
-import com.google.gson.Gson;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;

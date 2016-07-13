@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.dmeos.test.androidart.net;
+package com.dmeos.test.androidart.net.volley;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;

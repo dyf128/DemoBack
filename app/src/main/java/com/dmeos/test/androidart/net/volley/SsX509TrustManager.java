@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.dmeos.test.androidart.net;
+package com.dmeos.test.androidart.net.volley;
 
 import java.io.IOException;
 import java.io.InputStream;

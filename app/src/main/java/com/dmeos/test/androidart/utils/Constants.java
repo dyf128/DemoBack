@@ -19,4 +19,9 @@ public final class Constants {
     public static final String NET_REQUEST_ERROR_MSG_UNKNOW = "出现未知异常，暂时无法获取数据";
     public static final String NET_REQUEST_ERROR_MSG_PARSE_ERROR = "解析数据出现异常";
     public static final String NET_REQUEST_ERROR_MSG_TIMEOUT_ERROR = "请求超时";
+    public static final String NET_REQUEST_ERROR_MSG_AUTHFAILUREERROR = "未登录";
+    public static final String NET_REQUEST_ERROR_MSG_CLIENTERROR = "请求出错了";
+    public static final String NET_REQUEST_ERROR_MSG_SERVERERROR = "服务器出错了";
+    public static final String NET_REQUEST_ERROR_MSG_NETWORKERROR = "网络异常";
+    public static final String NET_REQUEST_ERROR_MSG_NOCONNECTIONERROR = "未链接网络，请检查网络设置";
 }

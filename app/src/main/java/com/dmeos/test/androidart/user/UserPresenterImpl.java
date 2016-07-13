@@ -2,7 +2,7 @@ package com.dmeos.test.androidart.user;
 
 import com.dmeos.test.androidart.module.Result;
 import com.dmeos.test.androidart.module.User;
-import com.dmeos.test.androidart.net.ResponseCallback;
+import com.dmeos.test.androidart.net.volley.ResponseCallback;
 
 
 public class UserPresenterImpl implements IUserPresenter, ResponseCallback {
